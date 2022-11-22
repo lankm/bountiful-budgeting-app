@@ -20,12 +20,19 @@ import java.lang.Exception
 
 lateinit var displayedReport: Report
 @Composable
-fun displayReport(r: Report) {
+fun displayReport(u: User) {
+
+    //if not initiallized. is a dumb fix
+    if (!::displayedReport.isInitialized) {
+        displayedReport = u.budgets[0].reports[0]
+    }
+
     //System.out.println("3:"+displayedReport.name)
     Column() {
-        Button(onClick = {
-            navController.navigate("reports")
-        },
+        Button(
+            onClick = {
+                navController.navigate("reports")
+            },
             modifier = Modifier
                 .padding(16.dp)
                 .height(35.dp),
@@ -33,16 +40,16 @@ fun displayReport(r: Report) {
                 backgroundColor = Color.White,
                 contentColor = Color.Black
             )
-        ){
+        ) {
             Text("Exit")
         }
 
         Text(
-            text = r.print(),
+            text = displayedReport.print(),
             modifier = Modifier
                 .padding(horizontal = 20.dp, vertical = 0.dp),
-            color = Color.White)
+            color = Color.White
+        )
     }
-
 
 }

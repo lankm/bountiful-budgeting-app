@@ -114,7 +114,7 @@ fun budget(budget: Budget) {
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween) {
 
-                Text(text= budget.name)
+                Text(text= budget.name + String.format(" (%.0f%%)", budget.percent()))
                 Text(text= String.format("$%.2f / $%.2f", budget.total(), budget.income))
             }
             //progrss bar
@@ -169,7 +169,7 @@ fun category(category: Category) {
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween) {
 
-                Text(text= category.name)
+                Text(text= category.name + String.format(" (%.0f%%)", category.percent()))
                 Text(text= String.format("$%.2f / $%.2f", category.total(), category.cap))
             }
             //progrss bar

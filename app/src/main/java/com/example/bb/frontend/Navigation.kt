@@ -138,7 +138,7 @@ fun Navigation(navController: NavHostController, u: User) {
             AlertScreen(u)
         }
         composable(NavigationItem.ReportDisplay.route) {
-            displayReport(displayedReport)
+            displayReport(u)
         }
         composable(NavigationItem.EditExpense.route) {
             editExpense(u)

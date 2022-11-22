@@ -50,7 +50,12 @@ open class Category {
         expenses = ArrayList<Expense>()
     }
     fun percent() : Double{
-        return (total()/cap) * 100
+        var p =(total()/cap) * 100
+
+        if(cap==0.0)
+            p=0.0
+
+        return p
     }
 
     // debug/toString
