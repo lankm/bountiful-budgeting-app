@@ -195,35 +195,38 @@ fun EditBudget(u: User, b: Budget) {
                     )
                 }
                 //remove
-                Button(
-                    onClick = {
+                if(!c.name.equals("Uncategorized")) { //cant delete uncateogrized
+                    Button(
+                        onClick = {
 
 
-                        b.name = budgetName
-                        b.income = budgetIncome.toDouble()
-                        //save caps
-                        var i = 0
-                        for(s in limits) {
-                            try {
-                                categories.get(i).cap = s.toDouble()
-                            }catch (e: java.lang.Exception){}
-                            i++
-                        }
+                            b.name = budgetName
+                            b.income = budgetIncome.toDouble()
+                            //save caps
+                            var i = 0
+                            for (s in limits) {
+                                try {
+                                    categories.get(i).cap = s.toDouble()
+                                } catch (e: java.lang.Exception) {
+                                }
+                                i++
+                            }
 
-                        categories.remove(c)
+                            categories.remove(c)
 
-                        budNav.navigate("newBud")
-                    },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .height(35.dp)
-                        .align(Alignment.CenterVertically),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.White,
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text("Remove")
+                            budNav.navigate("newBud")
+                        },
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .height(35.dp)
+                            .align(Alignment.CenterVertically),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.White,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Remove")
+                    }
                 }
             }
         }

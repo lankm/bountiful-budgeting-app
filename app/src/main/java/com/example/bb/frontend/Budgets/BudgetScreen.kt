@@ -52,7 +52,7 @@ fun budNavigation(navController: NavHostController, u: User) {
             mainBudScreen(u)
         }
         composable("categoryInfo") {
-            categoryDetail(cat)
+            categoryDetail(u, cat)
         }
         composable("newBud") {
             EditBudget(u = u, b = bud)
@@ -256,7 +256,7 @@ fun budgetSelection(u: User) {
 //bar at the bottom
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun addExpense(c: Category) {
+fun addExpense(c: Category, u: User) {
 
     //expense data
     var expName by remember { mutableStateOf(TextFieldValue()) }
@@ -320,7 +320,8 @@ fun addExpense(c: Category) {
                     )
                 )
             }
-
+        val openDialogCat = remember { mutableStateOf(false) }
+        val openDialogBud = remember { mutableStateOf(false) }
         //enter
         Button(
             onClick = {
@@ -330,11 +331,20 @@ fun addExpense(c: Category) {
                     c.addExpense(e)
                 } catch (e: java.lang.Exception) {
                 }
+                //if alerts needed
+                if(c.cap!=0.0 && 100-c.percent() <= u.alertSetting.categoryPercent) {
+                    openDialogCat.value = true
+                }
+                if(100-c.bud.percent() <= u.alertSetting.budgetPercent) {
+                    openDialogBud.value = true
+                }
+                if(!(openDialogCat.value || openDialogBud.value)) {
 
-                //go to current page (update it)
-                var route = budNav.currentBackStackEntry?.destination?.route
-                //System.out.println("route: \""+route.toString()+"\"")
-                budNav.navigate(route.toString())
+                    //go to current page (update it)
+                    var route = budNav.currentBackStackEntry?.destination?.route
+                    //System.out.println("route: \""+route.toString()+"\"")
+                    budNav.navigate(route.toString())
+                }
             },
             modifier = Modifier
                 .padding(20.dp)
@@ -345,13 +355,81 @@ fun addExpense(c: Category) {
                 contentColor = Color.White
             )
         ) {Text("Enter")}
+
+        //if went over budget
+        if (openDialogBud.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    openDialogBud.value = false
+                },
+                title = {
+                    Text(text = "Close to going over budget")
+                },
+                text = {
+                    Text(
+                        String.format("There is less than %.0f%% remaining in the entire budget", (100-c.bud.percent()))
+                    )
+                },
+                buttons = {
+                    Row(
+                        modifier = Modifier.padding(all = 8.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = {
+                                openDialogBud.value = false
+
+                                //go to current page (update it)
+                                var route = budNav.currentBackStackEntry?.destination?.route
+                                //System.out.println("route: \""+route.toString()+"\"")
+                                budNav.navigate(route.toString())}
+                        ) {
+                            Text("Dismiss")
+                        }
+                    }
+                }
+            )
+        }
+        if (openDialogCat.value) {
+            AlertDialog(
+                onDismissRequest = {
+                    openDialogCat.value = false
+                },
+                title = {
+                    Text(text = "Close to going over budget")
+                },
+                text = {
+                    Text(
+                        String.format("There is less than %.0f%% remaining in the Category", (100-c.percent()))
+                    )
+                },
+                buttons = {
+                    Row(
+                        modifier = Modifier.padding(all = 8.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Button(
+                            onClick = {
+                                openDialogCat.value = false
+
+                                //go to current page (update it)
+                                var route = budNav.currentBackStackEntry?.destination?.route
+                                //System.out.println("route: \""+route.toString()+"\"")
+                                budNav.navigate(route.toString())}
+                        ) {
+                            Text("Dismiss")
+                        }
+                    }
+                }
+            )
+        }
     }
 }
 
 //new screen with details of the category
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun categoryDetail(category: Category) {
+fun categoryDetail(u:User, category: Category) {
     Scaffold(
         content = {
             Column(
@@ -410,7 +488,7 @@ fun categoryDetail(category: Category) {
                 }
             }
         },
-        bottomBar = { addExpense(category)},//change
+        bottomBar = { addExpense(category,u)},//change
         backgroundColor = Color(50,100,50)
     )
 

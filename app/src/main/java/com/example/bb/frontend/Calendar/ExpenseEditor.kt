@@ -153,8 +153,12 @@ fun editExpense(u: User) {
             //**************************************************************
             Button(onClick = {
                 u.budgets[u.activeBud].removeExpense(curExpenseEdit)
-                //change page
-                navController.navigate("calendar")
+
+                //go to last page
+                var route = navController.previousBackStackEntry?.destination?.route
+                //System.out.println("route: \""+route.toString()+"\"")
+
+                navController.navigate(route.toString())
             },
                 modifier = Modifier
                     .padding(16.dp)
